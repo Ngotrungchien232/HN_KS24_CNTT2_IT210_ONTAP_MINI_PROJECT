@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Personal Todo App</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 30px; }
+        table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
+        th { background-color: #4CAF50; color: white; }
+        .error { color: red; font-size: 13px; }
+        input, select { padding: 6px; width: 100%; box-sizing: border-box; }
+        button { padding: 8px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        .form-group { margin-bottom: 12px; }
+        label { font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<h1> Danh Sách Công Việc</h1>
+
+<!-- ===== FORM THÊM MỚI ===== -->
+<h2> Thêm Công Việc Mới</h2>
+<form th:action="@{/add}" th:object="${newTodo}" method="post">
+
+    <div class="form-group">
+        <label>Nội dung:</label>
+        <input type="text" th:field="*{content}" placeholder="Nhập nội dung công việc..."/>
+        <!-- Hiển thị lỗi của field content -->
+        <span class="error" th:errors="*{content}"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Ngày hết hạn:</label>
+        <input type="date" th:field="*{dueDate}"/>
+        <!-- Hiển thị lỗi của field dueDate -->
+        <span class="error" th:errors="*{dueDate}"></span>
+    </div>
+
+    <div class="form-group">
+        <label>Trạng thái:</label>
+        <select th:field="*{status}">
+            <option value="TODO">TODO</option>
+            <option value="DONE">DONE</option>
+        </select>
+    </div>
+
+    <div class="form-group">
+        <label>Độ ưu tiên:</label>
+        <select th:field="*{priority}">
+            <option value="LOW">LOW</option>
+            <option value="MEDIUM">MEDIUM</option>
+            <option value="HIGH">HIGH</option>
+        </select>
+    </div>
+
+    <button type="submit"> Lưu</button>
+</form>
+
+<!-- ===== DANH SÁCH TASK ===== -->
+<h2> Danh Sách Task</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Nội dung</th>
+        <th>Ngày hết hạn</th>
+        <th>Trạng thái</th>
+        <th>Độ ưu tiên</th>
+    </tr>
+    </thead>
+    <tbody>
+    <!-- th:each lặp qua danh sách todos -->
+    <tr th:each="todo : ${todos}">
+        <td th:text="${todo.id}"></td>
+        <td th:text="${todo.content}"></td>
+        <td th:text="${todo.dueDate}"></td>
+        <td th:text="${todo.status}"></td>
+        <td th:text="${todo.priority}"></td>
+    </tr>
+    <!-- Hiển thị khi danh sách rỗng -->
+    <tr th:if="${#lists.isEmpty(todos)}">
+        <td colspan="5" style="text-align:center; color:gray;">Chưa có công việc nào!</td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
