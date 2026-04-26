@@ -9,8 +9,12 @@
         th, td { border: 1px solid #ccc; padding: 10px; text-align: left; }
         th { background-color: #4CAF50; color: white; }
         .error { color: red; font-size: 13px; }
+        .success { background: #d4edda; color: #155724; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
+        .danger  { background: #f8d7da; color: #721c24; padding: 10px; border-radius: 5px; margin-bottom: 15px; }
         input, select { padding: 6px; width: 100%; box-sizing: border-box; }
         button { padding: 8px 20px; background: #4CAF50; color: white; border: none; cursor: pointer; }
+        .btn-edit   { padding: 5px 12px; background: #ffc107; color: black; text-decoration: none; border-radius: 4px; }
+        .btn-delete { padding: 5px 12px; background: #dc3545; color: white; text-decoration: none; border-radius: 4px; }
         .form-group { margin-bottom: 12px; }
         label { font-weight: bold; }
     </style>
@@ -19,24 +23,23 @@
 
 <h1> Danh Sách Công Việc</h1>
 
-<!-- ===== FORM THÊM MỚI ===== -->
+<!-- ===== FLASH MESSAGE (Task 2) ===== -->
+<div class="success" th:if="${message}" th:text="${message}"></div>
+<div class="danger"  th:if="${error}"   th:text="${error}"></div>
+
+<!-- ===== FORM THÊM MỚI (Task 1 - giữ nguyên) ===== -->
 <h2> Thêm Công Việc Mới</h2>
 <form th:action="@{/add}" th:object="${newTodo}" method="post">
-
     <div class="form-group">
         <label>Nội dung:</label>
         <input type="text" th:field="*{content}" placeholder="Nhập nội dung công việc..."/>
-        <!-- Hiển thị lỗi của field content -->
         <span class="error" th:errors="*{content}"></span>
     </div>
-
     <div class="form-group">
         <label>Ngày hết hạn:</label>
         <input type="date" th:field="*{dueDate}"/>
-        <!-- Hiển thị lỗi của field dueDate -->
         <span class="error" th:errors="*{dueDate}"></span>
     </div>
-
     <div class="form-group">
         <label>Trạng thái:</label>
         <select th:field="*{status}">
@@ -44,7 +47,6 @@
             <option value="DONE">DONE</option>
         </select>
     </div>
-
     <div class="form-group">
         <label>Độ ưu tiên:</label>
         <select th:field="*{priority}">
@@ -53,7 +55,6 @@
             <option value="HIGH">HIGH</option>
         </select>
     </div>
-
     <button type="submit"> Lưu</button>
 </form>
 
@@ -67,20 +68,32 @@
         <th>Ngày hết hạn</th>
         <th>Trạng thái</th>
         <th>Độ ưu tiên</th>
+        <th>Hành động</th>
     </tr>
     </thead>
     <tbody>
-    <!-- th:each lặp qua danh sách todos -->
     <tr th:each="todo : ${todos}">
         <td th:text="${todo.id}"></td>
         <td th:text="${todo.content}"></td>
         <td th:text="${todo.dueDate}"></td>
         <td th:text="${todo.status}"></td>
         <td th:text="${todo.priority}"></td>
+        <td>
+            <!-- Nút Sửa: truyền ID qua URL -->
+            <a th:href="@{/todos/edit/{id}(id=${todo.id})}" class="btn-edit">️ Sửa</a>
+
+            &nbsp;
+
+            <!-- Nút Xóa: có confirm JS -->
+            <a th:href="@{/todos/delete/{id}(id=${todo.id})}"
+               class="btn-delete"
+               onclick="return confirm('Bạn có chắc muốn xóa task này không?')">
+                 Xóa
+            </a>
+        </td>
     </tr>
-    <!-- Hiển thị khi danh sách rỗng -->
     <tr th:if="${#lists.isEmpty(todos)}">
-        <td colspan="5" style="text-align:center; color:gray;">Chưa có công việc nào!</td>
+        <td colspan="6" style="text-align:center; color:gray;">Chưa có công việc nào!</td>
     </tr>
     </tbody>
 </table>
