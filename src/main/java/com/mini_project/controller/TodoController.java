@@ -1,6 +1,7 @@
 package com.mini_project.controller;
 import com.mini_project.model.Todo;
 import com.mini_project.repository.TodoRepository;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -14,14 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 public class TodoController {
 
     private final TodoRepository todoRepository;
-
-
-    @GetMapping("/")
-    public String listTodos(Model model) {
-        model.addAttribute("todos", todoRepository.findAll());
-        model.addAttribute("newTodo", new Todo());
-        return "index";
-    }
 
 
     @PostMapping("/add")
@@ -75,5 +68,20 @@ public class TodoController {
         todoRepository.deleteById(id);
         redirectAttributes.addFlashAttribute("message", " Xóa task thành công!");
         return "redirect:/";
+    }
+
+    //  GET / → Kiểm tra Session trước, nếu chưa có tên → redirect về welcome
+    @GetMapping("/")
+    public String listTodos(Model model, HttpSession session) {
+        // Bảo mật cơ bản: chưa nhập tên → về trang welcome
+        String ownerName = (String) session.getAttribute("ownerName");
+        if (ownerName == null || ownerName.isEmpty()) {
+            return "redirect:/welcome";
+        }
+
+        model.addAttribute("ownerName", ownerName);
+        model.addAttribute("todos", todoRepository.findAll());
+        model.addAttribute("newTodo", new Todo());
+        return "index";
     }
 }

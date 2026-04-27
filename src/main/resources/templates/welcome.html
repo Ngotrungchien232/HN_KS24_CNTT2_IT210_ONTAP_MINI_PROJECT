@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title th:text="#{welcome.title}">Chào mừng</title>
+  <style>
+    body { font-family: Arial, sans-serif; display: flex; justify-content: center; align-items: center; height: 100vh; margin: 0; background: #f0f2f5; }
+    .card { background: white; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); text-align: center; width: 350px; }
+    h1 { color: #4CAF50; margin-bottom: 20px; }
+    input { padding: 10px; width: 100%; box-sizing: border-box; border: 1px solid #ccc; border-radius: 6px; font-size: 15px; }
+    button { margin-top: 15px; padding: 10px 30px; background: #4CAF50; color: white; border: none; border-radius: 6px; font-size: 15px; cursor: pointer; width: 100%; }
+    .error { color: red; margin-top: 10px; font-size: 13px; }
+    .lang { margin-top: 15px; font-size: 13px; }
+    .lang a { margin: 0 5px; color: #4CAF50; text-decoration: none; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <h1> Todo App</h1>
+  <p th:text="#{welcome.label}">Nhập tên của bạn</p>
+
+  <form th:action="@{/welcome}" method="post">
+    <input type="text" name="ownerName"
+           th:placeholder="#{welcome.placeholder}"
+           autofocus/>
+    <p class="error" th:if="${error}" th:text="${error}"></p>
+    <button type="submit" th:text="#{welcome.button}">Bắt đầu</button>
+  </form>
+
+  <!-- Chuyển ngôn ngữ -->
+  <div class="lang">
+    <a th:href="@{/welcome(lang='vi')}" th:text="#{lang.vi}">Tiếng Việt</a> |
+    <a th:href="@{/welcome(lang='en')}" th:text="#{lang.en}">English</a>
+  </div>
+</div>
+</body>
+</html>
